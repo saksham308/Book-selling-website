@@ -10,7 +10,7 @@
 const User = require("../models/users.model");
 const Book = require("../models/books.model");
 const asyncHandler = require("express-async-handler");
-
+const uploadOnCloudinary = require("../utils/cloudinary");
 const getAllbooksDetails = asyncHandler(async (req, res) => {
   const books = await Book.find();
   res.status(200).json(books);
@@ -23,13 +23,32 @@ const uploadBook = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Please add text field");
   }
+  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  const pdfLocalPath = req.files?.coverImage[0]?.path;
+  if (!pdfLocalPath) {
+    throw new Error(" Book pdf not found!");
+  }
+  const pdfFile = await uploadOnCloudinary(pdfLocalPath);
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
+  if (!pdfFile) {
+    res.status(400);
+    throw new Error(" Book pdf not found!");
+  }
   const book = await Book.create({
     user: req.user.id,
     bookName,
     author,
+    pdf: pdfFile.url,
+    coverPage: coverImage?.url || "",
     price,
     description,
   });
+  const createdBook = await Book.findById({ _id: book._id });
+  if (!createdBook) {
+    res.status(500);
+    throw new Error("Something went wrong while uploading book");
+  }
   res.status(200).json(book);
 });
 
@@ -39,7 +58,7 @@ const getSingleBook = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Book not found");
   }
-  res.status(200).json(books);
+  res.status(201).json(books);
 });
 
 const updateBook = asyncHandler(async (req, res) => {
@@ -55,6 +74,6 @@ const updateBook = asyncHandler(async (req, res) => {
   const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
-  res.status(200).json(updatedBook);
+  res.status(201).json(updatedBook);
 });
 module.exports = { uploadBook, updateBook, getAllbooksDetails, getSingleBook };

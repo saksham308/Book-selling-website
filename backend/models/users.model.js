@@ -1,14 +1,5 @@
 const mongoose = require("mongoose");
 const walletTransactionSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  type: {
-    type: String,
-    enum: ["deposit", "withdrawal"],
-    required: true,
-  },
   amount: {
     type: Number,
     required: true,
@@ -25,9 +16,9 @@ const User_schema = new mongoose.Schema(
     password: { type: String, required: true },
     balance: {
       type: Number,
-      default: 0,
+      default: 100,
     },
-    transactions: [walletTransactionSchema],
+    deposits: [walletTransactionSchema],
   },
   { timestamps: true }
 );

@@ -8,6 +8,10 @@ const Book_schema = new mongoose.Schema(
     },
     bookName: { type: String, required: true },
     author: { type: String, required: true },
+    coverPage: {
+      data: String,
+    },
+    pdf: { type: String, required: true },
     description: { type: String, required: true },
     price: {
       type: Number,
