@@ -18,19 +18,28 @@ const getAllbooksDetails = asyncHandler(async (req, res) => {
 
 const uploadBook = asyncHandler(async (req, res) => {
   const { bookName, author, description, price } = req.body;
-
   if (!bookName || !author || !description || !price) {
     res.status(400);
-    throw new Error("Please add text field");
+    throw new Error("Please add all field");
   }
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
-  const pdfLocalPath = req.files?.coverImage[0]?.path;
+  let coverImageLocalPath;
+  let pdfLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
+  }
+  if (req.files && Array.isArray(req.files.pdf) && req.files.pdf.length > 0) {
+    pdfLocalPath = req.files.pdf[0].path;
+  }
   if (!pdfLocalPath) {
     throw new Error(" Book pdf not found!");
   }
   const pdfFile = await uploadOnCloudinary(pdfLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
-
+  console.log(pdfFile, coverImage);
   if (!pdfFile) {
     res.status(400);
     throw new Error(" Book pdf not found!");
