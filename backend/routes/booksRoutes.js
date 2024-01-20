@@ -7,6 +7,7 @@ const {
   updateBook,
   uploadBook,
   getSingleBook,
+  deleteBook,
 } = require("../controllers/bookController");
 router
   .get("", auth, getAllbooksDetails)
@@ -23,5 +24,6 @@ router
     uploadBook
   )
   .get("/:id", auth, getSingleBook)
-  .put("/:id", auth, updateBook);
+  .put("/:id", auth, updateBook)
+  .delete("/:id", auth, deleteBook);
 module.exports = router;

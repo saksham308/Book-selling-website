@@ -10,7 +10,10 @@
 const User = require("../models/users.model");
 const Book = require("../models/books.model");
 const asyncHandler = require("express-async-handler");
-const uploadOnCloudinary = require("../utils/cloudinary");
+const {
+  uploadOnCloudinary,
+  deleteOnCloudinary,
+} = require("../utils/cloudinary");
 const getAllbooksDetails = asyncHandler(async (req, res) => {
   const books = await Book.find();
   res.status(200).json(books);
@@ -39,7 +42,6 @@ const uploadBook = asyncHandler(async (req, res) => {
   }
   const pdfFile = await uploadOnCloudinary(pdfLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
-  console.log(pdfFile, coverImage);
   if (!pdfFile) {
     res.status(400);
     throw new Error(" Book pdf not found!");
@@ -48,8 +50,14 @@ const uploadBook = asyncHandler(async (req, res) => {
     user: req.user.id,
     bookName,
     author,
-    pdf: pdfFile.url,
-    coverPage: coverImage?.url || "",
+    pdf: {
+      publicURL: pdfFile.url,
+      publicID: pdfFile.public_id,
+    },
+    coverPage: {
+      publicURL: coverImage?.url || "",
+      publicID: coverImage?.public_id || "",
+    },
     price,
     description,
   });
@@ -85,4 +93,28 @@ const updateBook = asyncHandler(async (req, res) => {
   });
   res.status(201).json(updatedBook);
 });
-module.exports = { uploadBook, updateBook, getAllbooksDetails, getSingleBook };
+const deleteBook = asyncHandler(async (req, res) => {
+  const book = await Book.findById(req.params.id);
+  if (!book) {
+    res.status(401);
+    throw new Error("Book not found!!");
+  }
+  if (book.user.toString() !== req.user.id) {
+    res.status(401);
+    throw new Error("User not authorized!!");
+  }
+
+  const pdfFileId = book.pdf.publicID;
+  const coverImageID = book?.coverPage?.publicID;
+  await deleteOnCloudinary(pdfFileId);
+  coverImageID ? await deleteOnCloudinary(coverImageID) : "";
+  await Book.deleteOne({ _id: req.params.id });
+  res.status(201).json({ id: req.params.id });
+});
+module.exports = {
+  uploadBook,
+  updateBook,
+  getAllbooksDetails,
+  getSingleBook,
+  deleteBook,
+};

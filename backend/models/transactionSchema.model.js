@@ -16,11 +16,6 @@ const bookTransactionSchema = new mongoose.Schema({
     ref: "Book",
     required: [true, "Book information is required"],
   },
-  transactionType: {
-    type: String,
-    enum: ["buy", "sell"],
-    required: [true, "Transaction type is required"],
-  },
   transactionDate: {
     type: Date,
     default: Date.now,

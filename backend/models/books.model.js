@@ -9,9 +9,14 @@ const Book_schema = new mongoose.Schema(
     bookName: { type: String, required: true },
     author: { type: String, required: true },
     coverPage: {
-      data: String,
+      publicURL: { type: String },
+      publicID: { type: String },
     },
-    pdf: { type: String, required: true },
+    pdf: {
+      publicURL: { type: String, required: true },
+      publicID: { type: String, required: true },
+    },
+
     description: { type: String, required: true },
     price: {
       type: Number,
