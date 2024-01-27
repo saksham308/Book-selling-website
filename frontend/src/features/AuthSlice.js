@@ -10,7 +10,6 @@ const initialState = {
 };
 export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   try {
-    console.log(1);
     return await AuthService.login(user);
   } catch (err) {
     console.log(err);
@@ -46,7 +45,6 @@ const authSlice = createSlice({
   name: "user",
   reducers: {
     reset: (state) => {
-      console.log(1);
       state.isError = false;
       state.isLoading = false;
       state.isSuccess = false;
@@ -94,20 +92,3 @@ const authSlice = createSlice({
 });
 export default authSlice.reducer;
 export const { reset } = authSlice.actions;
-// extraReducers: (builder) => {
-//   builder
-//     .addCase(login.pending, (state) => (state.isLoading = true))
-//     .addCase(login.fulfilled, (state, action) => {
-//       (state.isLoading = false),
-//         (state.isError = false),
-//         (state.isSuccess = true);
-//       state.user = action.payload;
-//     })
-//     .addCase(login.rejected, (state, action) => {
-//       state.isLoading = false;
-//       state.isError = true;
-//       state.isSuccess = false;
-//       state.message = action.payload;
-//       state.user = null;
-//     });
-// },

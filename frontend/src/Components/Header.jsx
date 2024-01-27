@@ -1,11 +1,22 @@
 import {
-  Container,
   Flex,
-  Spacer,
   Heading,
   Box,
   ButtonGroup,
   Button,
+  Avatar,
+} from "@chakra-ui/react";
+import { FaUpload } from "react-icons/fa";
+
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import React from "react";
@@ -29,15 +40,37 @@ const Header = () => {
     });
   };
   const { user } = useSelector((state) => state.auth);
+  const { books } = useSelector((state) => state.books);
+
   return user ? (
     <Flex as="nav" justifyContent="space-between" flexWrap="wrap">
       <Box p="2">
         <Heading size="md">BOOKS N BOOKS</Heading>
       </Box>
       <ButtonGroup p={"2"} gap="4">
-        <Button colorScheme="teal" onClick={handleLogout}>
-          LogOut
+        <Button
+          leftIcon={<FaUpload />}
+          onClick={() => navigate("/upload")}
+          variant="solid"
+        >
+          UPLOAD
         </Button>
+        <Menu>
+          <MenuButton colorScheme="pink">
+            <Avatar bg="red.500" name={user?.name} />
+          </MenuButton>
+          <MenuList>
+            <MenuItem onClick={() => navigate("/")}>All Books</MenuItem>
+            <MenuItem onClick={() => navigate("/account")}>
+              Account Information
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/user-uploads")}>
+              Your Uploads
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>LogOut </MenuItem>
+            <MenuDivider />
+          </MenuList>
+        </Menu>
       </ButtonGroup>
     </Flex>
   ) : (

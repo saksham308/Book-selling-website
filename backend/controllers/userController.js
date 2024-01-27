@@ -55,17 +55,17 @@ const login = asyncHandler(async (req, res) => {
       name: user.username,
       email: user.email,
       token: generateToken(user.id),
+      balance: user.balance,
+      deposits: user.deposits,
     });
   } else {
     res.status(400);
     throw new Error("Invalid credentials");
   }
 });
-const getUserInfo = (req, res) => {
-  res.status(200).json(req.user);
-};
 const userBooks = asyncHandler(async (req, res) => {
+  // console.log(req);
   const books = await Book.find({ user: req.user.id });
   res.status(200).json(books);
 });
-module.exports = { login, userBooks, register, getUserInfo };
+module.exports = { login, userBooks, register };

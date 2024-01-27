@@ -9,6 +9,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
+import { Form } from "react-router-dom";
 import { register, reset } from "../features/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -51,79 +52,78 @@ const Register = () => {
       });
     }
     if (user) {
+      toast({
+        title: "Succesfully Registered",
+        description: message,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
       navigate("/");
     }
 
     dispatch(reset());
   }, [user, isLoading, isSuccess, isError, dispatch]);
   return (
-    <form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit}>
       <FormControl isRequired p={4}>
-        <Flex
-          direction="column"
-          gap={4}
-          justifyContent={"center"}
-          alignItems={"flex-start"}
-          alignSelf={"center"}
-        >
-          <FormLabel htmlFor="username">Username</FormLabel>
+        <FormLabel htmlFor="username">Username</FormLabel>
+        <Input
+          id="username"
+          value={name}
+          onChange={(e) =>
+            setSignupUser({ ...signupUser, name: e.target.value })
+          }
+          placeholder="Username"
+          type="text"
+        />
+        <FormLabel htmlFor="email">Email address</FormLabel>
+        <Input
+          id="email"
+          value={email}
+          placeholder="Email"
+          onChange={(e) =>
+            setSignupUser({ ...signupUser, email: e.target.value })
+          }
+          type="email"
+        />
+        <FormLabel>Password</FormLabel>
+        <InputGroup size="md">
           <Input
-            id="username"
-            value={name}
             onChange={(e) =>
-              setSignupUser({ ...signupUser, name: e.target.value })
+              setSignupUser({ ...signupUser, password: e.target.value })
             }
-            placeholder="Username"
-            type="text"
+            pr="4.5rem"
+            type={show ? "text" : "password"}
+            placeholder="Enter password"
           />
-          <FormLabel htmlFor="email">Email address</FormLabel>
+          <InputRightElement width="4.5rem">
+            <Button h="1.75rem" size="sm" onClick={() => setShow(!show)}>
+              {show ? "Hide" : "Show"}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
+        <FormLabel>Confirm Password</FormLabel>
+        <InputGroup size="md">
           <Input
-            id="email"
-            value={email}
-            placeholder="Email"
             onChange={(e) =>
-              setSignupUser({ ...signupUser, email: e.target.value })
+              setSignupUser({ ...signupUser, password2: e.target.value })
             }
-            type="email"
+            pr="4.5rem"
+            type={show ? "text" : "password"}
+            placeholder="Enter password"
           />
-          <FormLabel>Password</FormLabel>
-          <InputGroup size="md">
-            <Input
-              onChange={(e) =>
-                setSignupUser({ ...signupUser, password: e.target.value })
-              }
-              pr="4.5rem"
-              type={show ? "text" : "password"}
-              placeholder="Enter password"
-            />
-            <InputRightElement width="4.5rem">
-              <Button h="1.75rem" size="sm" onClick={() => setShow(!show)}>
-                {show ? "Hide" : "Show"}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-          <FormLabel>Confirm Password</FormLabel>
-          <InputGroup size="md">
-            <Input
-              onChange={(e) =>
-                setSignupUser({ ...signupUser, password2: e.target.value })
-              }
-              pr="4.5rem"
-              type={show ? "text" : "password"}
-              placeholder="Enter password"
-            />
-            <InputRightElement width="4.5rem">
-              <Button h="1.75rem" size="sm" onClick={() => setShow(!show)}>
-                {show ? "Hide" : "Show"}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-          <Button type="submit" colorScheme="teal">
-            Submit
-          </Button>
-        </Flex>
+          <InputRightElement width="4.5rem">
+            <Button h="1.75rem" size="sm" onClick={() => setShow(!show)}>
+              {show ? "Hide" : "Show"}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
+        <Button type="submit" colorScheme="teal">
+          Submit
+        </Button>
       </FormControl>
-    </form>
+    </Form>
   );
 };
 

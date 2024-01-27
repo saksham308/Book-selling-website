@@ -10,7 +10,7 @@ const errorHandler = require("./middlewares/errorMiddleware");
 connectDB();
 
 //middlewares
-app.use(rateLimit);
+// app.use(rateLimit);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

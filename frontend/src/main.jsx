@@ -15,12 +15,20 @@ import {
 import Layout from "./Components/Layout.jsx";
 import store from "./app/store.js";
 import { Provider } from "react-redux";
+import Account from "./pages/Account.jsx";
+import HistoryPage from "./pages/HistoryPage.jsx";
+import UploadPage from "./pages/UploadPage.jsx";
+import Uploads from "./pages/Uploads.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="" element={<Dashboard />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/history" element={<HistoryPage />} />
+      <Route path="/account" element={<Account />} />
+      <Route path="/user-uploads" element={<Uploads />} />
+      <Route path="/upload" element={<UploadPage />} />
     </Route>
   )
 );

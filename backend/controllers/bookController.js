@@ -7,7 +7,7 @@
 //       min: [0, "Price cannot be negative"],
 //     },
 //   },
-const User = require("../models/users.model");
+// const User = require("../models/users.model");
 const Book = require("../models/books.model");
 const asyncHandler = require("express-async-handler");
 const {
@@ -21,6 +21,7 @@ const getAllbooksDetails = asyncHandler(async (req, res) => {
 
 const uploadBook = asyncHandler(async (req, res) => {
   const { bookName, author, description, price } = req.body;
+  console.log(req);
   if (!bookName || !author || !description || !price) {
     res.status(400);
     throw new Error("Please add all field");
@@ -109,6 +110,7 @@ const deleteBook = asyncHandler(async (req, res) => {
   await deleteOnCloudinary(pdfFileId);
   coverImageID ? await deleteOnCloudinary(coverImageID) : "";
   await Book.deleteOne({ _id: req.params.id });
+  console.log({ id: req.params.id });
   res.status(201).json({ id: req.params.id });
 });
 module.exports = {
