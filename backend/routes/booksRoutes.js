@@ -23,7 +23,29 @@ router
     ]),
     uploadBook
   )
-  .get("/:id", auth, getSingleBook)
-  .put("/:id", auth, updateBook)
+  .get(
+    "/:id",
+    auth,
+    upload.fields([
+      {
+        name: "coverImage",
+        maxCount: 1,
+      },
+      { name: "pdf", maxCount: 1 },
+    ]),
+    getSingleBook
+  )
+  .put(
+    "/:id",
+    auth,
+    upload.fields([
+      {
+        name: "coverImage",
+        maxCount: 1,
+      },
+      { name: "pdf", maxCount: 1 },
+    ]),
+    updateBook
+  )
   .delete("/:id", auth, deleteBook);
 module.exports = router;

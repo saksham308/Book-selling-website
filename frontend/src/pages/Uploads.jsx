@@ -34,7 +34,6 @@ const Uploads = () => {
       });
     }
   };
-  const handleEdit = (bookId) => {};
   useEffect(() => {
     const fetchData = async () => {
       if (!user) {
@@ -88,11 +87,10 @@ const Uploads = () => {
 
                   <Button
                     colorScheme="green"
-                    onClick={() => handleEdit(book._id)}
                     leftIcon={<FaEdit />}
                     variant="solid"
                   >
-                    <Link to={"/"}> Edit</Link>
+                    <Link to={`/edit/${book._id}`}> Edit</Link>
                   </Button>
                 </Flex>
               </Flex>

@@ -48,6 +48,31 @@ const deleteBook = async (bookId, token) => {
   const response = await axios.delete(API_URL + bookId, config);
   return response.data;
 };
-
-const BookService = { getAllBooks, getUserBooks, uploadBook, deleteBook };
+const updateBook = async (book, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  console.log(book);
+  const { bookName, id, author, description, price, pdf, coverPage } = book;
+  const data = new FormData();
+  bookName ? data.append("bookName", bookName) : "";
+  author ? data.append("author", author) : "";
+  description ? data.append("description", description) : "";
+  price ? data.append("price", price) : "";
+  pdf ? data.append("pdf", pdf) : "";
+  coverPage ? data.append("coverImage", coverPage) : "";
+  // console.log(data);
+  const response = await axios.put(API_URL + id, data, config);
+  console.log(response.data);
+  return response.data;
+};
+const BookService = {
+  getAllBooks,
+  updateBook,
+  getUserBooks,
+  uploadBook,
+  deleteBook,
+};
 export default BookService;

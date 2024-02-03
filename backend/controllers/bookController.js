@@ -81,6 +81,7 @@ const getSingleBook = asyncHandler(async (req, res) => {
 
 const updateBook = asyncHandler(async (req, res) => {
   const book = await Book.findById({ _id: req.params.id });
+  const { bookName, author, description, price } = req.body;
   if (!book) {
     res.status(400);
     throw new Error("Book not found");
@@ -89,9 +90,57 @@ const updateBook = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("User not authorized");
   }
-  const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
+  let coverImageLocalPath;
+  let pdfLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
+  }
+  if (req.files && Array.isArray(req.files.pdf) && req.files.pdf.length > 0) {
+    pdfLocalPath = req.files.pdf[0].path;
+  }
+  let updatedObject = {};
+  if (bookName) {
+    updatedObject.bookName = bookName;
+  }
+  if (author) {
+    updatedObject.author = author;
+  }
+  if (price) {
+    updatedObject.price = price;
+  }
+  if (description) {
+    updatedObject.description = description;
+  }
+  if (pdfLocalPath) {
+    // console.log(pdfFile);
+    await deleteOnCloudinary(book.pdf.publicID);
+    const pdfFile = await uploadOnCloudinary(pdfLocalPath);
+
+    updatedObject.pdf = { publicURL: pdfFile.url, publicID: pdfFile.public_id };
+  }
+  if (coverImageLocalPath) {
+    await deleteOnCloudinary(book?.coverPage?.publicID);
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+    console.log(coverImage);
+    updatedObject.coverPage = {
+      publicURL: coverImage.url,
+      publicID: coverImage.public_id,
+    };
+  }
+  const updatedBook = await Book.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: updatedObject,
+    },
+    {
+      new: true,
+    }
+  );
+
   res.status(201).json(updatedBook);
 });
 const deleteBook = asyncHandler(async (req, res) => {
@@ -110,7 +159,6 @@ const deleteBook = asyncHandler(async (req, res) => {
   await deleteOnCloudinary(pdfFileId);
   coverImageID ? await deleteOnCloudinary(coverImageID) : "";
   await Book.deleteOne({ _id: req.params.id });
-  console.log({ id: req.params.id });
   res.status(201).json({ id: req.params.id });
 });
 module.exports = {

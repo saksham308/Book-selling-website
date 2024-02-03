@@ -10,11 +10,13 @@ import {
   Heading,
   CardFooter,
   Button,
+  useToast,
 } from "@chakra-ui/react";
-import { getAllBooks } from "../features/BooksSlice";
+import { getAllBooks, reset } from "../features/BooksSlice";
 
 const Dashboard = () => {
   const { user, isLoading } = useSelector((state) => state.auth);
+  const toast = useToast();
   const { books, isError, message, isSuccess } = useSelector(
     (state) => state.books
   );
@@ -23,11 +25,22 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) {
       navigate("/login");
-    } else {
-      dispatch(getAllBooks());
+      return;
     }
+    dispatch(getAllBooks());
+    if (isError) {
+      toast({
+        title: "Error occured",
+        description: message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    () => {
+      dispatch(reset());
+    };
   }, [user, isLoading]);
-  console.log(books);
 
   return (
     <>

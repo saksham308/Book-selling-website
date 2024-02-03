@@ -17,15 +17,16 @@ const UploadPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isError, isSuccess, message, loading } = useSelector(
+  const { books, loading, isSuccess, isError, message } = useSelector(
     (state) => state.books
   );
+  console.log(books, loading, isSuccess, isError);
   const { user } = useSelector((state) => state.auth);
   useEffect(() => {
     if (!user) navigate("/login");
+    return () => dispatch(reset());
   }, []);
 
-  console.log(loading, isError, isSuccess, "comp");
   const handleInputChange = (e) => {
     setBook({ ...book, [e.target.name]: e.target.value });
   };
@@ -79,6 +80,7 @@ const UploadPage = () => {
         title: "Upload Failed",
         status: "error",
         duration: 3000,
+        description: message,
         isClosable: true,
       });
     }
@@ -90,8 +92,6 @@ const UploadPage = () => {
         isClosable: true,
       });
     }
-
-    setTimeout(() => dispatch(reset()), 5000);
   };
   return (
     <>
@@ -138,7 +138,7 @@ const UploadPage = () => {
                 setBook({
                   ...book,
                   price:
-                    e.target.value < 10
+                    e.target.value < 0
                       ? 0
                       : e.target.value || e.target.value > 50
                       ? 50
