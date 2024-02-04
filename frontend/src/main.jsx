@@ -22,6 +22,7 @@ import HistoryPage from "./pages/HistoryPage.jsx";
 import UploadPage from "./pages/UploadPage.jsx";
 import Uploads from "./pages/Uploads.jsx";
 import EditPage from "./pages/EditPage.jsx";
+import BoughtBooks from "./pages/boughtBooks.jsx";
 let persistor = persistStore(store);
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route path="/account" element={<Account />} />
       <Route path="/user-uploads" element={<Uploads />} />
       <Route path="/edit/:bookId" element={<EditPage />} />
+      <Route path="/boughtBooks" element={<BoughtBooks />} />
       <Route path="/upload" element={<UploadPage />} />
     </Route>
   )

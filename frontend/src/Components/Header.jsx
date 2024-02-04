@@ -67,6 +67,9 @@ const Header = () => {
             <MenuItem onClick={() => navigate("/user-uploads")}>
               Your Uploads
             </MenuItem>
+            <MenuItem onClick={() => navigate("/boughtBooks")}>
+              Previously Bought
+            </MenuItem>
             <MenuItem onClick={handleLogout}>LogOut </MenuItem>
             <MenuDivider />
           </MenuList>

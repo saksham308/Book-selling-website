@@ -3,17 +3,34 @@ import BookService from "./BookService";
 const initialState = {
   books: [],
   uploadedBooks: [],
+  userBooks: [],
   loading: false,
   isError: false,
   isSuccess: false,
   message: "",
 };
+
 export const updateBook = createAsyncThunk(
   "books/updateBook",
   async (book, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
       return BookService.updateBook(book, token);
+    } catch (err) {
+      const message =
+        err.message ||
+        err.toString() ||
+        (err.response && err.response.data && err.response.data.message);
+      thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const boughtBooks = createAsyncThunk(
+  "books/boughtBook",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return BookService.boughtBooks(token);
     } catch (err) {
       const message =
         err.message ||
@@ -173,6 +190,22 @@ const bookSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.payload;
+      })
+      .addCase(boughtBooks.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(boughtBooks.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.userBooks = action.payload;
+      })
+      .addCase(boughtBooks.rejected, (state, action) => {
+        state.loading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload;
+        state.userBooks = [];
       });
   },
 });

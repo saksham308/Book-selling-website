@@ -92,6 +92,13 @@ const Uploads = () => {
                   >
                     <Link to={`/edit/${book._id}`}> Edit</Link>
                   </Button>
+                  <Button
+                    colorScheme="green"
+                    leftIcon={<FaEdit />}
+                    variant="solid"
+                  >
+                    <Link to={book?.pdf?.publicURL}> Book PDF</Link>
+                  </Button>
                 </Flex>
               </Flex>
             </CardBody>

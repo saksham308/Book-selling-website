@@ -54,7 +54,6 @@ const updateBook = async (book, token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  console.log(book);
   const { bookName, id, author, description, price, pdf, coverPage } = book;
   const data = new FormData();
   bookName ? data.append("bookName", bookName) : "";
@@ -63,12 +62,21 @@ const updateBook = async (book, token) => {
   price ? data.append("price", price) : "";
   pdf ? data.append("pdf", pdf) : "";
   coverPage ? data.append("coverImage", coverPage) : "";
-  // console.log(data);
   const response = await axios.put(API_URL + id, data, config);
-  console.log(response.data);
+  return response.data;
+};
+const boughtBooks = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios.get(API_URL + "boughtBooks", config);
+  console.log(response);
   return response.data;
 };
 const BookService = {
+  boughtBooks,
   getAllBooks,
   updateBook,
   getUserBooks,

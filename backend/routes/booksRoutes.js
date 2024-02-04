@@ -8,9 +8,11 @@ const {
   uploadBook,
   getSingleBook,
   deleteBook,
+  userBoughtBooks,
 } = require("../controllers/bookController");
 router
   .get("", auth, getAllbooksDetails)
+  .get("/boughtBooks", auth, userBoughtBooks)
   .post(
     "",
     auth,

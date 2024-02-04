@@ -17,7 +17,7 @@ const EditPage = () => {
   const { bookId } = useParams();
   const dispatch = useDispatch();
   const toast = useToast();
-  const { uploadedBooks } = useSelector((state) => state.books);
+  const { uploadedBooks, loading } = useSelector((state) => state.books);
   let filterBook = uploadedBooks.filter((book) => book._id === bookId);
   filterBook = filterBook[0];
   const [book, setBook] = useState({
@@ -149,16 +149,19 @@ const EditPage = () => {
         <FormLabel>Updated Cover Image of The Book</FormLabel>
         <Input name="coverPage" onChange={handleFileChange} type="file" />
       </FormControl>
-      (
-      <Button
-        colorScheme="teal"
-        margin={2}
-        alignSelf={"flex-start"}
-        type="submit"
-      >
-        Submit
-      </Button>
-      )
+
+      {loading ? (
+        <Button isLoading loadingText="Submitting"></Button>
+      ) : (
+        <Button
+          colorScheme="teal"
+          margin={2}
+          alignSelf={"flex-start"}
+          type="submit"
+        >
+          Submit
+        </Button>
+      )}
     </form>
   );
 };

@@ -19,6 +19,7 @@ const User_schema = new mongoose.Schema(
       default: 100,
     },
     deposits: [walletTransactionSchema],
+    boughtBooks: [],
   },
   { timestamps: true }
 );

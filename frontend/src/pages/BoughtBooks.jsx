@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { boughtBooks } from "../features/BooksSlice";
 import { Link } from "@chakra-ui/react";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import {
@@ -14,39 +15,21 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { getAllBooks, reset } from "../features/BooksSlice";
-
-const Dashboard = () => {
-  const { user, isLoading } = useSelector((state) => state.auth);
-  const toast = useToast();
-  const { books, isError, message, isSuccess } = useSelector(
-    (state) => state.books
-  );
-  const dispatch = useDispatch();
+const BoughtBooks = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { userBooks } = useSelector((state) => state.books);
+  console.log(userBooks);
   useEffect(() => {
     if (!user) {
       navigate("/login");
-      return;
     }
-    dispatch(getAllBooks());
-    if (isError) {
-      toast({
-        title: "Error occured",
-        description: message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-    () => {
-      dispatch(reset());
-    };
-  }, [user, isLoading]);
-
+    dispatch(boughtBooks());
+  }, []);
   return (
     <>
-      {books.map((book) => (
+      {userBooks?.map((book) => (
         <Card
           key={book._id}
           direction={{ base: "column", sm: "row" }}
@@ -76,7 +59,7 @@ const Dashboard = () => {
 
             <CardFooter gap={2}>
               <Button variant="solid" colorScheme="blue">
-                Buy Book
+                <Link href={book.pdf.publicURL}>Get PDF</Link>
               </Button>
             </CardFooter>
           </Stack>
@@ -86,4 +69,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default BoughtBooks;

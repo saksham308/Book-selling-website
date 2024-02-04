@@ -1,27 +1,24 @@
-// name: { type: String, required: true },
-//     Author: { type: String, required: true },
-//     description: { type: String, required: true },
-//     price: {
-//       type: Number,
-//       required: true,
-//       min: [0, "Price cannot be negative"],
-//     },
-//   },
-// const User = require("../models/users.model");
 const Book = require("../models/books.model");
+const Transaction = require("../models/transactionSchema.model");
+const User = require("../models/users.model");
 const asyncHandler = require("express-async-handler");
 const {
   uploadOnCloudinary,
   deleteOnCloudinary,
 } = require("../utils/cloudinary");
 const getAllbooksDetails = asyncHandler(async (req, res) => {
-  const books = await Book.find();
-  res.status(200).json(books);
+  const user = await User.findById(req.user.id);
+  // console.log(user.boughtBooks);
+  const books = await Book.find({ _id: { $nin: user.boughtBooks } });
+  const avaiableBooks = books.filter(
+    (book) => book.user.toString() !== req.user.id
+  );
+  res.status(200).json(avaiableBooks);
 });
 
 const uploadBook = asyncHandler(async (req, res) => {
   const { bookName, author, description, price } = req.body;
-  console.log(req);
+  // console.log(req);
   if (!bookName || !author || !description || !price) {
     res.status(400);
     throw new Error("Please add all field");
@@ -161,7 +158,13 @@ const deleteBook = asyncHandler(async (req, res) => {
   await Book.deleteOne({ _id: req.params.id });
   res.status(201).json({ id: req.params.id });
 });
+const userBoughtBooks = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  const books = await Book.find({ _id: { $in: user.boughtBooks } });
+  res.status(200).json(books);
+});
 module.exports = {
+  userBoughtBooks,
   uploadBook,
   updateBook,
   getAllbooksDetails,
